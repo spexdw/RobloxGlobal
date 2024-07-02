@@ -1,0 +1,12 @@
+
+local scriptExecuted = false
+
+if not scriptExecuted then
+    if scriptUrl then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/spexdw/RobloxGlobal/main/taciz-v2.lua'))()
+        scriptExecuted = true
+    else
+        toclipboard("https://discord.gg/EnNDNve9dW")
+        game.Players.LocalPlayer:Kick("Game Not Supported, Discord copied to clipboard")
+    end
+end
