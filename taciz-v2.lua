@@ -15,8 +15,8 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ResetOnSpawn = false
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 600, 0, 300)
-MainFrame.Position = UDim2.new(0.5, -300, 0.5, -150)
+MainFrame.Size = UDim2.new(0, 600, 0, 350)
+MainFrame.Position = UDim2.new(0.5, -300, 0.5, -175)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
@@ -175,8 +175,9 @@ end)
 
 -- Aimbot ayarları
 local aimbot = false
+local aimbotKey = Enum.KeyCode.X  -- Varsayılan tuş X
+local aimbotDistance = 5  -- Varsayılan mesafe
 local max_player_distance = 800
-local distance = 5
 local current_player = nil
 local teamCheck = false
 local autoSwitch = true
@@ -193,14 +194,40 @@ local AutoSwitchToggle = createToggle(AimbotPage, "Otomatik Geçiş", 100, funct
     autoSwitch = enabled
 end)
 
+local AimbotKeyInput = Instance.new("TextBox")
+AimbotKeyInput.Size = UDim2.new(1, -20, 0, 35)
+AimbotKeyInput.Position = UDim2.new(0, 10, 0, 145)
+AimbotKeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+AimbotKeyInput.TextColor3 = Color3.new(1, 1, 1)
+AimbotKeyInput.TextSize = 16
+AimbotKeyInput.Font = Enum.Font.GothamSemibold
+AimbotKeyInput.Text = "Aimbot Tuşu: " .. aimbotKey.Name
+AimbotKeyInput.Parent = AimbotPage
+
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 5)
+Corner.Parent = AimbotKeyInput
+
+AimbotKeyInput.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local newKey = Enum.KeyCode[AimbotKeyInput.Text:upper()]
+        if newKey then
+            aimbotKey = newKey
+            AimbotKeyInput.Text = "Aimbot Tuşu: " .. aimbotKey.Name
+        else
+            AimbotKeyInput.Text = "Aimbot Tuşu: " .. aimbotKey.Name
+        end
+    end
+end)
+
 local DistanceSlider = Instance.new("TextBox")
 DistanceSlider.Size = UDim2.new(1, -20, 0, 35)
-DistanceSlider.Position = UDim2.new(0, 10, 0, 145)
+DistanceSlider.Position = UDim2.new(0, 10, 0, 190)
 DistanceSlider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 DistanceSlider.TextColor3 = Color3.new(1, 1, 1)
 DistanceSlider.TextSize = 16
 DistanceSlider.Font = Enum.Font.GothamSemibold
-DistanceSlider.Text = "Mesafe: " .. distance
+DistanceSlider.Text = "Mesafe: " .. aimbotDistance
 DistanceSlider.Parent = AimbotPage
 
 local Corner = Instance.new("UICorner")
@@ -211,8 +238,8 @@ DistanceSlider.FocusLost:Connect(function(enterPressed)
     if enterPressed then
         local newDistance = tonumber(DistanceSlider.Text:match("%d+"))
         if newDistance then
-            distance = math.clamp(newDistance, 1, 20)
-            DistanceSlider.Text = "Mesafe: " .. distance
+            aimbotDistance = math.clamp(newDistance, 1, 20)
+            DistanceSlider.Text = "Mesafe: " .. aimbotDistance
         end
     end
 end)
@@ -228,7 +255,7 @@ PlayerInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 PlayerInput.TextColor3 = Color3.new(1, 1, 1)
 PlayerInput.TextSize = 16
 PlayerInput.Font = Enum.Font.GothamSemibold
-PlayerInput.PlaceholderText = "Oyuncu adı"
+PlayerInput.PlaceholderText = "Taciz Edilecek Oyuncu"
 PlayerInput.Text = ""
 PlayerInput.Parent = PlayerPage
 
@@ -243,7 +270,7 @@ FollowButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 FollowButton.TextColor3 = Color3.new(1, 1, 1)
 FollowButton.TextSize = 16
 FollowButton.Font = Enum.Font.GothamSemibold
-FollowButton.Text = "Takip Et"
+FollowButton.Text = "Taciz Et"
 FollowButton.Parent = PlayerPage
 
 local Corner = Instance.new("UICorner")
@@ -279,7 +306,7 @@ FollowButton.MouseButton1Click:Connect(function()
     targetPlayer = Players:FindFirstChild(playerName)
     if targetPlayer then
         followEnabled = not followEnabled
-        FollowButton.Text = followEnabled and "Takibi Durdur" or "Takip Et"
+        FollowButton.Text = followEnabled and "Tacizi Durdur" or "Taciz Et"
         FollowButton.BackgroundColor3 = followEnabled and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 40, 40)
     else
         warn("Oyuncu bulunamadı: " .. playerName)
@@ -297,7 +324,7 @@ TeleportButton.MouseButton1Click:Connect(function()
             TeleportButton.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
             TeleportStatus.Text = "Işınlanmaya 3 saniye..."
             
-            for i = 3, 1, -1 do
+	    for i = 3, 1, -1 do
                 TeleportStatus.Text = "Işınlanmaya " .. i .. " saniye..."
                 wait(1)
             end
@@ -411,7 +438,7 @@ local function updateAimbot()
                     local root = character:FindFirstChild("HumanoidRootPart")
                     local humanoid = character:FindFirstChild("Humanoid")
 
-                    if root and humanoid and humanoid.Health > 0 and root.Position.Z <= 3500 then
+                    if root and humanoid and humanoid.Health > 0 then
                         if teamCheck and player.Team == local_player.Team then
                             continue
                         end
@@ -432,7 +459,8 @@ local function updateAimbot()
     if current_player then
         local enemy_root = current_player:FindFirstChild("HumanoidRootPart")
         if enemy_root then
-            local target_position = enemy_root.Position + (local_root.Position - enemy_root.Position).Unit * distance
+            local direction = (enemy_root.Position - local_root.Position).Unit
+            local target_position = enemy_root.Position - direction * aimbotDistance
 
             local camera = game.Workspace.CurrentCamera
             camera.CFrame = CFrame.new(camera.CFrame.Position, enemy_root.Position)
@@ -461,7 +489,10 @@ RunService.RenderStepped:Connect(function()
         updateESP()
     end
     
-    updateAimbot()
+    if aimbot then
+        updateAimbot()
+    end
+    
     followPlayer()
 end)
 
@@ -489,8 +520,14 @@ end
 
 -- F3 tuşu ile menüyü açıp kapatma
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.F3 then
-        ScreenGui.Enabled = not ScreenGui.Enabled
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.F3 then
+            ScreenGui.Enabled = not ScreenGui.Enabled
+        elseif input.KeyCode == aimbotKey then
+            aimbot = not aimbot
+            AimbotToggle.Text = "Aimbot: " .. (aimbot and "ON" or "OFF")
+            AimbotToggle.BackgroundColor3 = aimbot and Color3.fromRGB(0, 255, 100) or Color3.fromRGB(40, 40, 40)
+        end
     end
 end)
 
