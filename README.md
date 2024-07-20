@@ -1,5 +1,8 @@
 # RobloxGlobal ESP-Aimbot-Teleport
 
+# V5 Pro
+loadstring(game:HttpGet("https://raw.githubusercontent.com/spexdw/RobloxGlobal/main/TacizV5ProX2.lua",true))()
+
 # V4
 loadstring(game:HttpGet("https://raw.githubusercontent.com/spexdw/RobloxGlobal/main/TacizV4Pro.lua",true))()
 
