@@ -19,9 +19,9 @@ local library = {
     ended = {},
     changed = {},
     folders = {
-        main = "splix",
-        assets = "splix/assets",
-        configs = "splix/configs"
+        main = "tacizv8",
+        assets = "tacizv8/assets",
+        configs = "tacizv8/configs"
     },
     shared = {
         initialized = false,
