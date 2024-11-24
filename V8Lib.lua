@@ -370,7 +370,7 @@ do
     function library:New(info)
 		local info = info or {}
         local name = info.name or info.Name or info.title or info.Title or "UI Title"
-        local size = info.size or info.Size or Vector2.new(950,604)
+        local size = info.size or info.Size or Vector2.new(900,600)
         local accent = info.accent or info.Accent or info.color or info.Color or theme.accent
         --
         theme.accent = accent
