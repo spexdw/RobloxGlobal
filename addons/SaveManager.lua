@@ -131,7 +131,7 @@ local SaveManager = {} do
 		return true
 	end
 
-	-- Yeni eklenen RemoveConfig fonksiyonu
+
 	function SaveManager:RemoveConfig(name)
 		if (not name) then
 			return false, 'no config file is selected'
@@ -140,12 +140,12 @@ local SaveManager = {} do
 		local configPath = self.Folder .. '/settings/' .. name .. '.json'
 		local autoloadPath = self.Folder .. '/settings/autoload.txt'
 
-		-- Config dosyası var mı kontrol et
+		
 		if not isfile(configPath) then
 			return false, 'config file does not exist'
 		end
 
-		-- Config dosyasını sil
+
 		local success, err = pcall(function()
 			delfile(configPath)
 		end)
@@ -154,15 +154,15 @@ local SaveManager = {} do
 			return false, 'failed to delete config file'
 		end
 
-		-- Eğer autoload dosyası varsa ve silinmek istenen config autoload olarak ayarlanmışsa
+	
 		if isfile(autoloadPath) then
 			local autoloadConfig = readfile(autoloadPath)
 			if autoloadConfig == name then
-				-- Autoload dosyasını sil
+			
 				pcall(function()
 					delfile(autoloadPath)
 				end)
-				-- Autoload label'ı güncelle
+				
 				if self.AutoloadLabel then
 					self.AutoloadLabel:SetText('Current autoload config: none')
 				end
@@ -287,7 +287,7 @@ local SaveManager = {} do
 			self.Library:Notify(string.format('Overwrote config %q', name))
 		end)
 		
-		-- Delete config butonu eklendi
+	
 		section:AddButton('Delete config', function()
 			local name = Options.SaveManager_ConfigList.Value
 			
@@ -302,7 +302,7 @@ local SaveManager = {} do
 
 			self.Library:Notify(string.format('Deleted config %q', name))
 
-			-- Config listesini güncelle
+	
 			Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
 			Options.SaveManager_ConfigList:SetValues()
 			Options.SaveManager_ConfigList:SetValue(nil)
