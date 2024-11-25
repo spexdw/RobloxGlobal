@@ -2770,12 +2770,15 @@ function Library:SetWatermarkVisibility(Bool)
 end;
 
 function Library:SetWatermark(Text)
-    local X, Y = Library:GetTextBounds(Text, Library.Font, 14);
-    Library.Watermark.Size = UDim2.new(0, X + 15, 0, (Y * 1.5) + 3);
-    Library:SetWatermarkVisibility(true)
+    local X, Y = Library:GetTextBounds(Text, Library.Font, 14)
 
-    Library.WatermarkText.Text = Text;
-end;
+    Library.Watermark.AnchorPoint = Vector2.new(0, 1) -- Sol alt köşe için anchor point
+    Library.Watermark.Position = UDim2.new(0, 10, 1, -10) -- Sol alt köşeden 10 pixel offset
+    Library.Watermark.Size = UDim2.new(0, X + 15, 0, (Y * 1.5) + 3)
+    
+    Library:SetWatermarkVisibility(true)
+    Library.WatermarkText.Text = Text
+end
 
 function Library:Notify(Text, Time)
     local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
