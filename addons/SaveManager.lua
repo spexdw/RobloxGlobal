@@ -1,7 +1,7 @@
 local httpService = game:GetService('HttpService')
 
 local SaveManager = {} do
-	SaveManager.Folder = 'LinoriaLibSettings'
+	SaveManager.Folder = 'SpeXLibSettings'
 	SaveManager.Ignore = {}
 	SaveManager.Parser = {
 		Toggle = {
@@ -131,6 +131,47 @@ local SaveManager = {} do
 		return true
 	end
 
+	-- Yeni eklenen RemoveConfig fonksiyonu
+	function SaveManager:RemoveConfig(name)
+		if (not name) then
+			return false, 'no config file is selected'
+		end
+
+		local configPath = self.Folder .. '/settings/' .. name .. '.json'
+		local autoloadPath = self.Folder .. '/settings/autoload.txt'
+
+		-- Config dosyası var mı kontrol et
+		if not isfile(configPath) then
+			return false, 'config file does not exist'
+		end
+
+		-- Config dosyasını sil
+		local success, err = pcall(function()
+			delfile(configPath)
+		end)
+
+		if not success then
+			return false, 'failed to delete config file'
+		end
+
+		-- Eğer autoload dosyası varsa ve silinmek istenen config autoload olarak ayarlanmışsa
+		if isfile(autoloadPath) then
+			local autoloadConfig = readfile(autoloadPath)
+			if autoloadConfig == name then
+				-- Autoload dosyasını sil
+				pcall(function()
+					delfile(autoloadPath)
+				end)
+				-- Autoload label'ı güncelle
+				if self.AutoloadLabel then
+					self.AutoloadLabel:SetText('Current autoload config: none')
+				end
+			end
+		end
+
+		return true
+	end
+
 	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
 			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
@@ -197,7 +238,6 @@ local SaveManager = {} do
 		end
 	end
 
-
 	function SaveManager:BuildConfigSection(tab)
 		assert(self.Library, 'Must set SaveManager.Library')
 
@@ -245,6 +285,27 @@ local SaveManager = {} do
 			end
 
 			self.Library:Notify(string.format('Overwrote config %q', name))
+		end)
+		
+		-- Delete config butonu eklendi
+		section:AddButton('Delete config', function()
+			local name = Options.SaveManager_ConfigList.Value
+			
+			if not name then
+				return self.Library:Notify('No config selected')
+			end
+
+			local success, err = self:RemoveConfig(name)
+			if not success then
+				return self.Library:Notify('Failed to delete config: ' .. err)
+			end
+
+			self.Library:Notify(string.format('Deleted config %q', name))
+
+			-- Config listesini güncelle
+			Options.SaveManager_ConfigList.Values = self:RefreshConfigList()
+			Options.SaveManager_ConfigList:SetValues()
+			Options.SaveManager_ConfigList:SetValue(nil)
 		end)
 		
 		section:AddButton('Autoload config', function()
