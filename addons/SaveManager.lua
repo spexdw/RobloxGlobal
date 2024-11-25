@@ -322,6 +322,7 @@ local SaveManager = {} do
 		end)
 
 		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
+		section:AddLabel('Developed By SpeX',true)
 
 		if isfile(self.Folder .. '/settings/autoload.txt') then
 			local name = readfile(self.Folder .. '/settings/autoload.txt')
