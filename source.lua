@@ -74,13 +74,6 @@ local function GetPlayersString()
     return PlayerList
 end
 
-
-while true do
-    local currentPlayerList = GetPlayersString()
-    print("SpeXD Says Updated PlayerList:", table.concat(currentPlayerList, ", "))
-    wait(5)
-end
-
 local function GetTeamsString()
     local TeamList = Teams:GetTeams();
 
