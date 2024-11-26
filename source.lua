@@ -66,16 +66,20 @@ table.insert(Library.Signals, RenderStepped:Connect(function(Delta)
 end))
 
 local function GetPlayersString()
-    local PlayerList = Players:GetPlayers();
-
+    local PlayerList = Players:GetPlayers()
     for i = 1, #PlayerList do
-        PlayerList[i] = PlayerList[i].Name;
-    end;
+        PlayerList[i] = PlayerList[i].Name
+    end
+    table.sort(PlayerList, function(str1, str2) return str1 < str2 end)
+    return PlayerList
+end
 
-    table.sort(PlayerList, function(str1, str2) return str1 < str2 end);
 
-    return PlayerList;
-end;
+while true do
+    local currentPlayerList = GetPlayersString()
+    print("SpeXD Says Updated PlayerList:", table.concat(currentPlayerList, ", "))
+    wait(5)
+end
 
 local function GetTeamsString()
     local TeamList = Teams:GetTeams();
