@@ -96,7 +96,7 @@ local ThemeManager = {} do
 		else
 			self:ApplyTheme(theme)
 		end
-	end
+   end
 
    function ThemeManager:SaveDefault(theme)
        local themePath = self.Folder .. '/themes'
