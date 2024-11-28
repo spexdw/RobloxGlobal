@@ -1,6 +1,6 @@
 local httpService = game:GetService('HttpService')
 local ThemeManager = {} do
-   ThemeManager.Folder = 'SpeXLibSettings'
+   ThemeManager.Folder = 'LinoriaLibSettings'
    ThemeManager.Library = nil
    
    -- Extended built-in themes collection
