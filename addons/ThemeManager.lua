@@ -126,6 +126,19 @@ local ThemeManager = {} do
            end
        end)
 
+
+       groupbox:AddButton('Delete theme', function()
+           if Options.ThemeManager_CustomThemeList.Value then
+               self:DeleteCustomTheme(Options.ThemeManager_CustomThemeList.Value)
+               self.Library:Notify(string.format('Deleted theme: %q', Options.ThemeManager_CustomThemeList.Value))
+               
+               -- Refresh the custom themes list
+               Options.ThemeManager_CustomThemeList.Values = self:ReloadCustomThemes()
+               Options.ThemeManager_CustomThemeList:SetValues()
+               Options.ThemeManager_CustomThemeList:SetValue(nil)
+           end
+       end)
+
        groupbox:AddButton('Set as default', function()
            if Options.ThemeManager_CustomThemeList.Value then
                self:SaveDefault(Options.ThemeManager_CustomThemeList.Value)
@@ -176,6 +189,20 @@ local ThemeManager = {} do
        end
 
        writefile(self.Folder .. '/themes/' .. name, httpService:JSONEncode(theme))
+   end
+
+   function ThemeManager:DeleteCustomTheme(name)
+       if name:gsub(' ', '') == '' then
+           return self.Library:Notify('Invalid theme name (empty)', 3)
+       end
+
+       local path = self.Folder .. '/themes/' .. name
+       if isfile(path) then
+           delfile(path)
+           return true
+       end
+       
+       return false
    end
 
    function ThemeManager:CreateCustomTheme(name)
