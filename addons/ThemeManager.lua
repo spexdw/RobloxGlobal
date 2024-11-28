@@ -83,10 +83,17 @@ local ThemeManager = {} do
    end
 
    function ThemeManager:SaveDefault(theme)
-       if not isfolder(self.Folder .. '/themes') then
-           makefolder(self.Folder .. '/themes')
+       local themePath = self.Folder .. '/themes'
+       local defaultFile = themePath .. '/default.txt'
+       
+       if not isfolder(themePath) then
+           makefolder(themePath)
        end
-       writefile(self.Folder .. '/themes/default.txt', theme)
+       
+       if isfile(defaultFile) then
+           delfile(defaultFile)
+       end
+       writefile(defaultFile, theme)
    end
 
    function ThemeManager:CreateThemeManager(groupbox)
