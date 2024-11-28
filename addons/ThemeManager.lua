@@ -82,6 +82,10 @@ local ThemeManager = {} do
        end
    end
 
+   function ThemeManager:SaveDefault2(theme)
+		writefile(self.Folder .. '/themes/default.txt', theme)
+	end
+
    function ThemeManager:SaveDefault(theme)
        local themePath = self.Folder .. '/themes'
        local defaultFile = themePath .. '/default.txt'
@@ -121,6 +125,11 @@ local ThemeManager = {} do
                end
            end
        })
+
+       groupbox:AddButton('Set as default', function()
+			self:SaveDefault2(Options.ThemeManager_ThemeList.Value)
+			self.Library:Notify(string.format('Set default theme to %q', Options.ThemeManager_ThemeList.Value))
+		 end)
 
        groupbox:AddDivider()
        groupbox:AddDropdown('ThemeManager_CustomThemeList', { Text = 'Custom themes', Values = self:ReloadCustomThemes(), AllowNull = true })
