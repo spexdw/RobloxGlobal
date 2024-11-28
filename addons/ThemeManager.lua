@@ -75,21 +75,28 @@ local ThemeManager = {} do
        self.Library:UpdateColorsUsingRegistry()
    end
 
-   function ThemeManager:LoadDefault()        
-       local themePath = self.Folder .. '/themes'
-       local defaultFile = themePath .. '/default.txt'
-       
-       if isfile(defaultFile) then
-           local content = readfile(defaultFile)
-           if self.BuiltInThemes[content] then
-               self:ApplyTheme(content)
-           else
-               self:ApplyTheme('Default')
-           end
-       else
-           self:ApplyTheme('Default')
-       end
-   end
+   function ThemeManager:LoadDefault()		
+		local theme = 'Default'
+		local content = isfile(self.Folder .. '/themes/default.txt') and readfile(self.Folder .. '/themes/default.txt')
+
+		local isDefault = true
+		if content then
+			if self.BuiltInThemes[content] then
+				theme = content
+			elseif self:GetCustomTheme(content) then
+				theme = content
+				isDefault = false;
+			end
+		elseif self.BuiltInThemes[self.DefaultTheme] then
+		 	theme = self.DefaultTheme
+		end
+
+		if isDefault then
+			Options.ThemeManager_ThemeList:SetValue(theme)
+		else
+			self:ApplyTheme(theme)
+		end
+	end
 
    function ThemeManager:SaveDefault(theme)
        local themePath = self.Folder .. '/themes'
